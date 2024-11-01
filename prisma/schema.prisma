@@ -22,3 +22,52 @@ model User {
   name      String
   photo     String
 }
+
+model Exam {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String?
+  description String?
+  sections    Section[]
+}
+
+model Section {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  exam        Exam       @relation(fields: [examId], references: [id])
+  examId      String     @db.ObjectId
+  title       String?
+  description String?
+  questions   Question[]
+}
+
+model Question {
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
+  Section     Section?     @relation(fields: [sectionId], references: [id])
+  sectionId   String?      @db.ObjectId
+  type        QuestionType 
+  title       String?
+  description String?
+  questions   QAndA[]
+
+  //Image Question
+  Image String?
+
+  // Table Question
+  html String?
+}
+
+model QAndA {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  Question   Question? @relation(fields: [questionId], references: [id])
+  questionId String?   @db.ObjectId
+  question   String?
+  Oprions    String[]
+  answer     String[]
+}
+
+enum QuestionType {
+  MCQ // Multiple choice question
+  MHQ // Matching Question
+  IQ // Image Question
+  TQ // Table question
+  SQ // Short Question
+}
